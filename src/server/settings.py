@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'tg_bot_app.apps.TgBotAppConfig'
 ]
 
 MIDDLEWARE = [
@@ -73,10 +75,16 @@ WSGI_APPLICATION = 'server.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+DATABASE_PASSWORD = dotenv.dotenv_values('.env')['DATABASE_PASSWORD']
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "cryptocurrencydb",
+        "USER": "izaschhyk",
+        "PASSWORD": DATABASE_PASSWORD,
+        "HOST": "crypto-currency-db.postgres.database.azure.com",
+        "PORT": "5432",
     }
 }
 
