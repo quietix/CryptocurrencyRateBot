@@ -19,8 +19,9 @@ from django.urls import path
 import sys
 sys.path.append(r'C:\\Users\\Admin\\PycharmProjects\\CryptocurrencyRateBot')
 from src.tg_bot_app import views
+from django.apps import apps
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', views.handle_request)
+    path('', views.handle_request),
+    path('admin/', views.admin),
 ]
