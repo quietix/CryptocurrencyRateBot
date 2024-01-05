@@ -1,4 +1,4 @@
-from telebot.handler_backends import State, StatesGroup #States
+from telebot.handler_backends import State, StatesGroup
 
 class MyStates(StatesGroup):
     register = State()

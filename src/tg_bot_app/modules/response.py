@@ -1,6 +1,9 @@
+import telebot.types
+
 from src.apply_config_changes import bot
 from telebot import types
 from src.tg_bot_app import api_retriever
+from src.tg_bot_app.states import MyStates
 
 
 class Response:
@@ -41,3 +44,59 @@ class Response:
                        types.InlineKeyboardButton(coins[i+2]['name'], callback_data=f"{coins[i+2]['name']}"))
 
         bot.send_message(message.chat.id, "Оберіть криптовалюту", reply_markup=markup)
+
+
+    def response_to_callbacks(self, call: telebot.types.CallbackQuery):
+        coins = api_retriever.json_r['data']['coins']
+        for i in range(0, 9):
+
+            if call.data == "back_to_menu":
+                markup = types.InlineKeyboardMarkup()
+                for i in range(0, 9, 3):
+                    markup.add(types.InlineKeyboardButton(coins[i]['name'], callback_data=f"{coins[i]['name']}"),
+                               types.InlineKeyboardButton(coins[i + 1]['name'],
+                                                          callback_data=f"{coins[i + 1]['name']}"),
+                               types.InlineKeyboardButton(coins[i + 2]['name'],
+                                                          callback_data=f"{coins[i + 2]['name']}"))
+                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id, text="Оберіть криптовалюту", reply_markup=markup)
+
+
+            elif call.data == coins[i]['name']:
+                markup = types.InlineKeyboardMarkup()
+                markup.row_width = 2
+
+                btn1 = types.InlineKeyboardButton(text="Ціна в $", callback_data=f"{coins[i]['name']}_price_dollar")
+                btn2 = types.InlineKeyboardButton(text=f"Ціна в BTC", callback_data=f"{coins[i]['name']}_price_btc")
+                btn4 = types.InlineKeyboardButton(text=f"Назад", callback_data=f"back_to_menu")
+
+                markup.add(btn1, btn2, btn4)
+
+                bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.id, text=f"'{coins[i]['name']}' в доларах та в біткоїнах", reply_markup=markup)
+
+
+            elif call.data == f"{coins[i]['name']}_price_dollar":
+                markup = types.InlineKeyboardMarkup()
+                markup.row_width = 2
+
+                btn1 = types.InlineKeyboardButton(text="Ціна в $", callback_data=f"{coins[i]['name']}_price_dollar")
+                btn2 = types.InlineKeyboardButton(text=f"Ціна в BTC", callback_data=f"{coins[i]['name']}_price_btc")
+                btn4 = types.InlineKeyboardButton(text=f"Назад", callback_data=f"back_to_menu")
+
+                markup.add(btn1, btn2, btn4)
+
+                bot.answer_callback_query(callback_query_id=call.id)
+                bot.send_message(call.message.chat.id, f"Ціна '{coins[i]['name']}': {coins[i]['price']}$")
+
+
+            elif call.data == f"{coins[i]['name']}_price_btc":
+                markup = types.InlineKeyboardMarkup()
+                markup.row_width = 2
+
+                btn1 = types.InlineKeyboardButton(text="Ціна в $", callback_data=f"{coins[i]['name']}_price_dollar")
+                btn2 = types.InlineKeyboardButton(text=f"Ціна в BTC", callback_data=f"{coins[i]['name']}_price_btc")
+                btn4 = types.InlineKeyboardButton(text=f"Назад", callback_data=f"back_to_menu")
+
+                markup.add(btn1, btn2, btn4)
+
+                bot.answer_callback_query(callback_query_id=call.id)
+                bot.send_message(call.message.chat.id, f"Ціна '{coins[i]['name']}': {coins[i]['btcPrice']} BTC")

@@ -21,19 +21,6 @@ class DBManager():
         user_to_delete.delete()
 
 
-    def account_exists(self, phone_number) -> bool:
-        '''
-        Check if account exists
-        '''
-        accounts = apps.get_model('tg_bot_app', 'Account').objects.all()
-
-        for account in accounts:
-            if phone_number == account.phone:
-                return True
-
-        return False
-
-
     def add_account(self, user_id, phone):
         accounts_model = apps.get_model('tg_bot_app', 'Account')
         users_model = apps.get_model('tg_bot_app', 'User')

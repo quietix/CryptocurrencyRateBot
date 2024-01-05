@@ -5,6 +5,8 @@ from telebot.types import Update, Message
 from src.tg_bot_app.modules.response import Response
 from src.tg_bot_app.modules.db_manager import DBManager
 from src.tg_bot_app.states import MyStates
+from telebot import types
+from src.tg_bot_app import api_retriever
 
 
 response = Response()
@@ -13,9 +15,6 @@ db_manager = DBManager()
 
 @bot.message_handler(commands=['start'])
 def start(message: telebot.types.Message):
-    bot.set_state(user_id=message.from_user.id,
-                  state=MyStates.register,
-                  chat_id=message.chat.id)
     db_manager.add_user(message)
     response.send_help_list(message)
 
@@ -34,7 +33,7 @@ def register(message: telebot.types.Message):
 def contact_handler(message: Message):
     phone_number = message.contact.phone_number
 
-    if db_manager.account_exists(phone_number):
+    if db_manager.is_registered(message.from_user.id):
        bot.send_message(message.chat.id, "Ви вже зареєстровані.\nДля того, щоб перейти до головного меню, натисність /menu",
                         reply_markup=telebot.types.ReplyKeyboardRemove())
     else:
@@ -47,10 +46,13 @@ def contact_handler(message: Message):
 @bot.message_handler(commands=['menu'])
 def menu(message: telebot.types.Message):
     if db_manager.is_registered(message.from_user.id):
-        response.send_menu(message)
         bot.set_state(message.from_user.id, MyStates.menu, message.chat.id)
+        response.send_menu(message)
     else:
-        bot.send_message(message.chat.id, "Для того, щоб перейти до головного меню, потрібно пройти реєстрацію.\n\nЗареєструватися можна за допомогою команди /register")
         bot.set_state(message.from_user.id, MyStates.register, message.chat.id)
+        bot.send_message(message.chat.id, "Для того, щоб перейти до головного меню, потрібно пройти реєстрацію.\n\nЗареєструватися можна за допомогою команди /register")
 
 
+@bot.callback_query_handler(state=MyStates.menu, func=lambda call: True)
+def callback_query(call: telebot.types.CallbackQuery):
+    response.response_to_callbacks(call)
