@@ -16,7 +16,8 @@ def handle_request(request):
             bot.process_new_updates([update])
             bot.add_message_handler({"/start": handlers.start,
                                      "/help": handlers.help,
-                                     "/register": handlers.register})
+                                     "/register": handlers.register,
+                                     "/menu": handlers.register})
         except Exception as e:
             print(str(e))
         return HttpResponse('', status=200)

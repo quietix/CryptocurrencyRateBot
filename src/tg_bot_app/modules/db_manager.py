@@ -44,6 +44,9 @@ class DBManager():
         new_account.save()
 
 
+    def is_registered(self, user_id):
+        return apps.get_model('tg_bot_app', 'Account').objects.filter(user_id=user_id)
+
 
 
 
