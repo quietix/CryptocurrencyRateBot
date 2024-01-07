@@ -22,6 +22,7 @@ from src.tg_bot_app import views
 from django.apps import apps
 
 urlpatterns = [
-    path('', views.handle_request),
+    path('', views.tmp),
+    # path('', views.handle_request),
     path('admin/', views.admin),
 ]

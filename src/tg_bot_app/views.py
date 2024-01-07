@@ -9,6 +9,11 @@ from . import handlers
 
 
 @csrf_exempt
+def tmp(request):
+    return HttpResponse('success', status=200)
+
+
+@csrf_exempt
 def handle_request(request):
     if request.method == "POST":
         try:
