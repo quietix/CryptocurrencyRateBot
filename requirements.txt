@@ -1,5 +1,5 @@
-Django==5.0.1
-pyTelegramBotAPI==4.14.1
-pyTelegramBotAPI==4.14.1
-python-dotenv==1.0.0
-Requests==2.31.0
+Django
+pyTelegramBotAPI
+python-dotenv
+Requests
+psycopg2-binary
